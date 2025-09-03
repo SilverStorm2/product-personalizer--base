@@ -1,21 +1,11 @@
-import React, { useState, useMemo } from "react";
-import PropTypes from "prop-types";
-import styles from "./Product.module.scss";
-import clsx from "clsx";
-import Button from "../Button/Button";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateSearchString } from "../../actions";
+import styles from "./SearchForm.module.scss";
 
-const Product = ({ id, name, title, colors, sizes, basePrice }) => {
-  const [currentColor, setCurrentColor] = useState(colors[0]);
-  const [currentSize, setCurrentSize] = useState(sizes[0].name);
+const SearchForm = () => {
   const [searchString, setSearchString] = useState("");
   const dispatch = useDispatch();
-
-  const price = useMemo(() => {
-    const sizeObj = sizes.find((size) => size.name === currentSize);
-    return basePrice + (sizeObj ? sizeObj.additionalPrice : 0);
-  }, [basePrice, sizes, currentSize]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,13 +13,23 @@ const Product = ({ id, name, title, colors, sizes, basePrice }) => {
     setSearchString("");
   };
 
-  const prepareColorClassName = (color) =>
-    styles["color" + color[0].toUpperCase() + color.substr(1).toLowerCase()];
-
   return (
-    <article className={styles.product}>
-      <div className={styles.imageContainer}>
-        <img
+    <form onSubmit={handleSubmit} className={styles.searchForm}>
+      <input
+        type="text"
+        value={searchString}
+        onChange={(e) => setSearchString(e.target.value)}
+        placeholder="Search..."
+        className={styles.searchInput}
+      />
+      <button type="submit" className={styles.searchButton}>
+        Search
+      </button>
+    </form>
+  );
+};
+
+export default SearchForm;
           className={styles.image}
           alt={title}
           src={`${process.env.PUBLIC_URL}/images/products/shirt-${name}--${currentColor}.jpg`}
